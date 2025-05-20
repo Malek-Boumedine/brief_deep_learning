@@ -1,6 +1,8 @@
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import OneHotEncoder
+from sklearn.preprocessing import OneHotEncoder, LabelEncoder
+from sklearn.model_selection import train_test_split
+
 
 
 
@@ -11,18 +13,20 @@ from sklearn.preprocessing import OneHotEncoder
 pd.set_option('display.max_columns', 500)
 
 df = pd.read_csv("WA_Fn-UseC_-Telco-Customer-Churn.csv")
+df.drop(["customerID"], axis = 1, inplace=True)
 df.columns = df.columns.str.replace(" ", "", regex=False)
 
 print("shape : ", df.shape)
 
-print(df.dtypes)
-
+print("DTYPES : \n\n", df.dtypes)
 print(df.select_dtypes(include="object").head())
 
 #  colonne TotalCharges : suppression des espaces, remplacement des vides par des NaN, conversion et type float
 df["TotalCharges"] = df["TotalCharges"].str.strip().replace(",", ".", regex=True).replace("", np.nan).astype(float)
 df["TotalCharges"].isna().sum()
-df.dropna(inplace=True)
+print("nombre de null dans total charges avant traitement : ", df["TotalCharges"].isna().sum())
+df = df.dropna(subset=["TotalCharges"])
+print("nombre de null dans total charges après traitement : ", df["TotalCharges"].isna().sum())
 
 print("shape : ", df.shape)
 
@@ -68,25 +72,31 @@ print("target :", target)
 X = df.drop(target, axis = 1)
 y = df[target]
 
-encoder = OneHotEncoder(drop='first')
-
-bool_encod = encoder.fit_transform(X[boolean_cols])
+encoder_bool = OneHotEncoder(drop='first')
+bool_encod = encoder_bool.fit_transform(X[boolean_cols])
 df_bool_encod = pd.DataFrame(
     bool_encod.toarray(),
-    columns=encoder.get_feature_names_out(boolean_cols),
+    columns=encoder_bool.get_feature_names_out(boolean_cols),
     index=X.index
 )
 
-
-cat_encod = encoder.fit_transform(X[cat_cols])
+encoder_cat = OneHotEncoder(drop='first')
+cat_encod = encoder_cat.fit_transform(X[cat_cols])
 df_cat_encod = pd.DataFrame(
     cat_encod.toarray(), 
-    columns=encoder.get_feature_names_out(cat_cols), 
+    columns=encoder_cat.get_feature_names_out(cat_cols), 
     index=X.index
 )
 
+label_enc = LabelEncoder()
+y = label_enc.fit_transform(y)
 
+X = X.drop(boolean_cols, axis=1)
+X = X.drop(cat_cols, axis=1)
 
+X = pd.concat([X, df_bool_encod, df_cat_encod], axis = 1)
+
+print(X.shape)
 
 ##################
 # MISE A L'ECHELLE
