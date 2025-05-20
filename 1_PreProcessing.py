@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+from sklearn.preprocessing import OneHotEncoder
+
 
 
 ########################
@@ -51,6 +53,7 @@ for c in df.select_dtypes(exclude="object").columns :
     print(f"nombre de NaN : {df[c].isna().sum()}")
     print()    
 
+boolean_cols.remove("Churn")
 
 print("#"*50)
 print("colonnes yes no : ", boolean_cols)
@@ -61,7 +64,26 @@ print("target :", target)
 #########
 #ENCODAGE
 #########
-# one hot encoder pour les variable categorielles
+
+X = df.drop(target, axis = 1)
+y = df[target]
+
+encoder = OneHotEncoder(drop='first')
+
+bool_encod = encoder.fit_transform(X[boolean_cols])
+df_bool_encod = pd.DataFrame(
+    bool_encod.toarray(),
+    columns=encoder.get_feature_names_out(boolean_cols),
+    index=X.index
+)
+
+
+cat_encod = encoder.fit_transform(X[cat_cols])
+df_cat_encod = pd.DataFrame(
+    cat_encod.toarray(), 
+    columns=encoder.get_feature_names_out(cat_cols), 
+    index=X.index
+)
 
 
 
