@@ -106,6 +106,6 @@ X1, X_test, y1, y_test = train_test_split(X, y, test_size=0.2, random_state=42, 
 X_train, X_val, y_train, y_val = train_test_split(X1, y1, test_size=0.2, random_state=42, stratify=y1)
 
 standard_scaler = StandardScaler()
-X_train = standard_scaler.fit_trandform(X_train)
+X_train = standard_scaler.fit_transform(X_train)
 X_test = standard_scaler.fit(X_test)
 X_val = standard_scaler.fit(X_val)
