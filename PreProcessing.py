@@ -2,6 +2,10 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import OneHotEncoder, LabelEncoder, StandardScaler
 from sklearn.model_selection import train_test_split
+import os
+import joblib
+
+
 
 # fixer les seeds : 
 import random
@@ -122,4 +126,20 @@ X_train = standard_scaler.fit_transform(X_train)
 X_test = standard_scaler.transform(X_test)
 X_val = standard_scaler.transform(X_val)
 
+#############################
+# sauvegarde des transformers
+#############################
+
+transformers = {
+    'encoder_bool': encoder_bool,
+    'encoder_cat': encoder_cat,
+    'standard_scaler': standard_scaler,
+    'label_encoder': label_enc,
+    'boolean_cols': boolean_cols,
+    'cat_cols': cat_cols,
+    'numeric_cols': numeric_cols
+}
+
+os.makedirs("saved_model", exist_ok=True)
+joblib.dump(transformers, "saved_model/transformers.joblib")
 
