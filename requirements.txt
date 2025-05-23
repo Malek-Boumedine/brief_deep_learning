@@ -3,3 +3,6 @@ numpy
 tensorflow
 scikit-learn
 missingno
+keras-tuner
+tensorflow-addons
+keras

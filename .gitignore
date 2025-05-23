@@ -3,4 +3,4 @@
 .venv
 Brief Métier _ Prédiction de Churn Clients avec le Deep Learning.pdf
 __pycache__
-
+logs/

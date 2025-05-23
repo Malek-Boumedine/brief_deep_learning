@@ -2,9 +2,17 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import OneHotEncoder, LabelEncoder, StandardScaler
 from sklearn.model_selection import train_test_split
+import os
+import joblib
 
 
 
+# fixer les seeds : 
+import random
+np.random.seed(42)
+random.seed(42)
+# import tensorflow as tf
+# tf.random.set_seed(42)
 
 ########################
 # NETTOYAGE DES DONNEES
@@ -16,19 +24,23 @@ df = pd.read_csv("WA_Fn-UseC_-Telco-Customer-Churn.csv")
 df.drop(["customerID"], axis = 1, inplace=True)
 df.columns = df.columns.str.replace(" ", "", regex=False)
 
-print("shape : ", df.shape)
+if __name__ == "__main__" : 
+    print("shape : ", df.shape)
 
-print("DTYPES : \n\n", df.dtypes)
-print(df.select_dtypes(include="object").head())
+    print("DTYPES : \n\n", df.dtypes)
+    print(df.select_dtypes(include="object").head())
 
 #  colonne TotalCharges : suppression des espaces, remplacement des vides par des NaN, conversion et type float
 df["TotalCharges"] = df["TotalCharges"].str.strip().replace(",", ".", regex=True).replace("", np.nan).astype(float)
 df["TotalCharges"].isna().sum()
-print("nombre de null dans total charges avant traitement : ", df["TotalCharges"].isna().sum())
-df = df.dropna(subset=["TotalCharges"])
-print("nombre de null dans total charges après traitement : ", df["TotalCharges"].isna().sum())
 
-print("shape : ", df.shape)
+if __name__ == "__main__" : 
+    print("nombre de null dans total charges avant traitement : ", df["TotalCharges"].isna().sum())
+df = df.dropna(subset=["TotalCharges"])
+
+if __name__ == "__main__" : 
+    print("nombre de null dans total charges après traitement : ", df["TotalCharges"].isna().sum())
+    print("shape : ", df.shape)
 
 boolean_cols = []
 cat_cols = []
@@ -39,31 +51,34 @@ target = "Churn"
 # colonnes objet : 
 for c in df.select_dtypes(include="object").columns :
     df[c] = df[c].str.strip().replace("", np.nan)
-    print(f"# {c} \n valeurs uniques : {len(df[c].unique())}") 
     if len(df[c].unique()) == 2 : 
         boolean_cols.append(c)
     if len(df[c].unique()) > 2 : 
         cat_cols.append(c)
-    print(f"nombre de NaN : {df[c].isna().sum()}")
-    print(f"valeurs uniques : {df[c].unique()}")
-    print()
+    if __name__ == "__main__" : 
+        print(f"# {c} \n valeurs uniques : {len(df[c].unique())}") 
+        print(f"nombre de NaN : {df[c].isna().sum()}")
+        print(f"valeurs uniques : {df[c].unique()}")
+        print()
 
 
 # colonnes numériques :
 for c in df.select_dtypes(exclude="object").columns :
-    print(f"# {c} \n valeurs uniques : {len(df[c].unique())}") 
     if len(df[c].unique()) == 2 : 
         boolean_cols.append(c)
-    print(f"nombre de NaN : {df[c].isna().sum()}")
-    print()    
+    if __name__ == "__main__" : 
+        print(f"# {c} \n valeurs uniques : {len(df[c].unique())}") 
+        print(f"nombre de NaN : {df[c].isna().sum()}")
+        print()    
 
 boolean_cols.remove("Churn")
 
-print("#"*50)
-print("colonnes yes no : ", boolean_cols)
-print("colonnes numeriques : ", numeric_cols)
-print("colonnes 3 valeurs minimum :", cat_cols)
-print("target :", target)
+if __name__ == "__main__" : 
+    print("#"*50)
+    print("colonnes yes no : ", boolean_cols)
+    print("colonnes numeriques : ", numeric_cols)
+    print("colonnes 3 valeurs minimum :", cat_cols)
+    print("target :", target)
 
 #########
 #ENCODAGE
@@ -96,7 +111,8 @@ X = X.drop(cat_cols, axis=1)
 
 X = pd.concat([X, df_bool_encod, df_cat_encod], axis = 1)
 
-print(X.shape)
+if __name__ == "__main__" : 
+    print(X.shape)
 
 ##################
 # MISE A L'ECHELLE
@@ -107,5 +123,23 @@ X_train, X_val, y_train, y_val = train_test_split(X1, y1, test_size=0.2, random_
 
 standard_scaler = StandardScaler()
 X_train = standard_scaler.fit_transform(X_train)
-X_test = standard_scaler.fit(X_test)
-X_val = standard_scaler.fit(X_val)
+X_test = standard_scaler.transform(X_test)
+X_val = standard_scaler.transform(X_val)
+
+#############################
+# sauvegarde des transformers
+#############################
+
+transformers = {
+    'encoder_bool': encoder_bool,
+    'encoder_cat': encoder_cat,
+    'standard_scaler': standard_scaler,
+    'label_encoder': label_enc,
+    'boolean_cols': boolean_cols,
+    'cat_cols': cat_cols,
+    'numeric_cols': numeric_cols
+}
+
+os.makedirs("saved_model", exist_ok=True)
+joblib.dump(transformers, "saved_model/transformers.joblib")
+
