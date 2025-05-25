@@ -17,7 +17,7 @@ Les données fournies (**WA_Fn-UseC_-Telco-Customer-Churn.csv**) sont un extrait
 
 ## 🧱 Fonctionnalités Implémentées (MVP)
 
-### 🔍 Data Preparation
+### 🔍 Préparation des données
 - Nettoyage & typage des colonnes
 - Encodage systématique des catégorielles 
 - Split train / val / test (stratifié)
@@ -39,7 +39,7 @@ Les données fournies (**WA_Fn-UseC_-Telco-Customer-Churn.csv**) sont un extrait
   - Chargement des artefacts
   - Prédiction du churn sur de nouvelles données
 
-### 📈 Collaboration Git
+### 👷 Collaboration Git
 - 1 branch = 1 feature 
 - Pull request systématique avec description 
 
@@ -48,24 +48,25 @@ Les données fournies (**WA_Fn-UseC_-Telco-Customer-Churn.csv**) sont un extrait
 
 ### 1. Clôner le dépôt
 - bash
-`git clone https://github.com/Malek-Boumedine/brief_deep_learning.git`
-`cd brief_deep_learning`
+  - `git clone https://github.com/Malek-Boumedine/brief_deep_learning.git`
+  - `cd brief_deep_learning`
 
 ### 2. Création d'un environnement virtuel
-- bash
-`python -m venv .venv`
-- Si vous êtes sur Windows
-`source .venv/Scripts/activate`
+- bash :
+  - `python -m venv .venv`
+- Si vous êtes sur Windows :
+  - `source .venv/Scripts/activate`
 
 ### 3. Installation des dépendances
 - bash
-`pip install -r requirements.txt`
-`pip install -r requirements2.txt`
+  - `pip install -r requirements.txt`
+  - `pip install -r requirements2.txt`
 
 ## Informations sur les fichiers
-- requirements.txt      => fichier comprenant les dépendances du projet
-- requirements2.txt     => deuxième fichier comprenant les dépendances du projet
-- PreProcessing.py      => Nettoyage des données, pré-traitement des données
-- modelisation.py       => Implémentation du modèle de prédiction sous TensorFlow
-- utils.py              => (à compléter)
+- requirements.txt                     => fichier comprenant les dépendances du projet
+- requirements2.txt                    => deuxième fichier comprenant les dépendances du projet
+- PreProcessing.py                     => Nettoyage des données, pré-traitement des données
+- modelisation.py                      => Implémentation du modèle de prédiction sous TensorFlow
+- modelisation_pytorch.py              => notebook de nettoyage, tré-traitement, modélisation et évaluation du modèle sous PyTorch
+- utils.py                             => (à compléter)
 - WA_Fn-UseC_-Telco-Customer-Churn.csv => dataset
